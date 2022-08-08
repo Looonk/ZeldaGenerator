@@ -1,5 +1,4 @@
 import os
-
 from telethon import TelegramClient, events
 
 
@@ -53,7 +52,13 @@ with bot:
 			for f in a:
 				n, z = f.split("@")
 				s += n + z + "\n"
-			await bot.send_message(event.sender_id, s, link_preview=False)
+			if event.photo:
+				path = await event.download_media("img.png")
+				await bot.send_file(event.sender_id, path, caption=s, link_preview=False)
+				os.remove("img.png")
+			else:
+				await bot.send_message(event.sender_id, s, link_preview=False)
+
 
 bot.start()
 bot.run_until_disconnected()
